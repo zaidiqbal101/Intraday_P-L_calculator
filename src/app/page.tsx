@@ -173,7 +173,7 @@ export default function Home() {
             <span className="text-3xl">📈</span>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">P&L Calculator</h1>
-          <p className="text-slate-300">Calculate your trading profits</p>
+          <p className="text-slate-300">Calculate your trading profits and losses</p>
         </div>
 
         {/* Main Card */}
