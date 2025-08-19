@@ -81,16 +81,16 @@ export default function Home() {
             <div className="text-lg font-bold text-gray-800">₹{totalCharges.toFixed(2)}</div>
           </div>
         </div>
-        <div className={`p-6 rounded-lg border-2 ${netProfit >= 0 
+        <div className={`p-6 rounded-lg border-2 Rs{netProfit >= 0 
           ? 'bg-green-50 border-green-200' 
           : 'bg-red-50 border-red-200'
         }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`w-3 h-3 rounded-full ${netProfit >= 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <div className={`w-3 h-3 rounded-full Rs{netProfit >= 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
               <span className="text-lg font-semibold text-gray-700">Net Profit</span>
             </div>
-            <div className={`text-2xl font-bold ${netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`text-2xl font-bold Rs{netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               ₹{netProfit.toFixed(2)}
             </div>
           </div>
