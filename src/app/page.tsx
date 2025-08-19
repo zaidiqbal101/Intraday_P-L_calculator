@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { TrendingUp, Calculator, DollarSign } from 'lucide-react';
 
 export default function Home() {
   const [buyPrice, setBuyPrice] = useState<string>('');
   const [sellPrice, setSellPrice] = useState<string>('');
   const [quantity, setQuantity] = useState<string>('');
   const [result, setResult] = useState<React.ReactNode>(null);
+  const [showBreakdown, setShowBreakdown] = useState<boolean>(false);
+  const [chargesBreakdown, setChargesBreakdown] = useState<any>(null);
 
   const calculate = () => {
     const buy = parseFloat(buyPrice);
@@ -51,6 +52,19 @@ export default function Home() {
     // Total charges
     const totalCharges = brokerage + stt + exch + sebi + stamp + gst;
 
+    // Store breakdown for detailed view
+    setChargesBreakdown({
+      brokerage: brokerage,
+      stt: stt,
+      exchange: exch,
+      sebi: sebi,
+      stamp: stamp,
+      gst: gst,
+      buyValue: buyValue,
+      sellValue: sellValue,
+      turnover: turnover
+    });
+
     // Gross & Net profit
     const grossProfit = (sell - buy) * qty;
     const netProfit = grossProfit - totalCharges;
@@ -67,20 +81,27 @@ export default function Home() {
             <div className="text-lg font-bold text-gray-800">₹{totalCharges.toFixed(2)}</div>
           </div>
         </div>
-        <div className={`p-6 rounded-lg border-2 Rs{netProfit >= 0 
+        <div className={`p-6 rounded-lg border-2 ${netProfit >= 0 
           ? 'bg-green-50 border-green-200' 
           : 'bg-red-50 border-red-200'
         }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`w-3 h-3 rounded-full Rs{netProfit >= 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <div className={`w-3 h-3 rounded-full ${netProfit >= 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
               <span className="text-lg font-semibold text-gray-700">Net Profit</span>
             </div>
-            <div className={`text-2xl font-bold Rs{netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`text-2xl font-bold ${netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               ₹{netProfit.toFixed(2)}
             </div>
           </div>
         </div>
+        <button
+          onClick={() => setShowBreakdown(true)}
+          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+        >
+          <span>📊</span>
+          View Detailed Breakdown
+        </button>
       </div>
     );
   };
@@ -95,7 +116,7 @@ export default function Home() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-            <TrendingUp className="w-8 h-8 text-white" />
+            <span className="text-3xl">📈</span>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">P&L Calculator</h1>
           <p className="text-slate-300">Calculate your intraday trading profits</p>
@@ -107,7 +128,7 @@ export default function Home() {
             {/* Buy Price Section */}
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-semibold text-white">
-                <DollarSign className="w-4 h-4" />
+                <span className="text-lg">💰</span>
                 Buy Price
               </label>
               <input
@@ -130,7 +151,7 @@ export default function Home() {
             {/* Sell Price Section */}
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-semibold text-white">
-                <DollarSign className="w-4 h-4" />
+                <span className="text-lg">💰</span>
                 Sell Price
               </label>
               <input
@@ -153,7 +174,7 @@ export default function Home() {
             {/* Quantity Section */}
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-semibold text-white">
-                <Calculator className="w-4 h-4" />
+                <span className="text-lg">🔢</span>
                 Quantity
               </label>
               <input
@@ -172,7 +193,7 @@ export default function Home() {
               onClick={calculate}
               className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
             >
-              <Calculator className="w-5 h-5" />
+              <span className="text-lg">🧮</span>
               Calculate P&L
             </button>
 
@@ -184,7 +205,7 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="text-center text-slate-300">
-                  <Calculator className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <span className="text-4xl mb-2 opacity-50 block">🧮</span>
                   <p className="text-sm">Enter values and calculate to see results</p>
                 </div>
               )}
@@ -199,6 +220,122 @@ export default function Home() {
           </p>
         </div>
       </div>
+
+      {/* Charges Breakdown Modal */}
+      {showBreakdown && chargesBreakdown && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <span>📊</span>
+                Charges Breakdown
+              </h3>
+              <button
+                onClick={() => setShowBreakdown(false)}
+                className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+              >
+                <span className="text-gray-600">✕</span>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Transaction Summary */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                  <span>📋</span>
+                  Transaction Summary
+                </h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Buy Value:</span>
+                    <span className="font-medium">₹{chargesBreakdown.buyValue.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Sell Value:</span>
+                    <span className="font-medium">₹{chargesBreakdown.sellValue.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between border-t pt-2">
+                    <span className="text-gray-600">Total Turnover:</span>
+                    <span className="font-medium">₹{chargesBreakdown.turnover.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Charges Breakdown */}
+              <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                <h4 className="font-semibold text-red-700 mb-3 flex items-center gap-2">
+                  <span>💸</span>
+                  Deduction Details
+                </h4>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-gray-700 font-medium">Brokerage</div>
+                      <div className="text-xs text-gray-500">0.03% or ₹20/order (whichever is lower)</div>
+                    </div>
+                    <span className="font-medium text-red-600">₹{chargesBreakdown.brokerage.toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-gray-700 font-medium">STT</div>
+                      <div className="text-xs text-gray-500">0.025% on sell value</div>
+                    </div>
+                    <span className="font-medium text-red-600">₹{chargesBreakdown.stt.toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-gray-700 font-medium">Exchange Charges</div>
+                      <div className="text-xs text-gray-500">0.00345% on turnover</div>
+                    </div>
+                    <span className="font-medium text-red-600">₹{chargesBreakdown.exchange.toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-gray-700 font-medium">SEBI Charges</div>
+                      <div className="text-xs text-gray-500">0.0001% on turnover</div>
+                    </div>
+                    <span className="font-medium text-red-600">₹{chargesBreakdown.sebi.toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-gray-700 font-medium">Stamp Duty</div>
+                      <div className="text-xs text-gray-500">0.003% on buy value</div>
+                    </div>
+                    <span className="font-medium text-red-600">₹{chargesBreakdown.stamp.toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-gray-700 font-medium">GST</div>
+                      <div className="text-xs text-gray-500">18% on brokerage + exchange charges</div>
+                    </div>
+                    <span className="font-medium text-red-600">₹{chargesBreakdown.gst.toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="border-t pt-2 flex justify-between items-center">
+                    <div className="text-gray-700 font-semibold">Total Charges</div>
+                    <span className="font-bold text-red-600 text-lg">
+                      ₹{(chargesBreakdown.brokerage + chargesBreakdown.stt + chargesBreakdown.exchange + 
+                          chargesBreakdown.sebi + chargesBreakdown.stamp + chargesBreakdown.gst).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowBreakdown(false)}
+              className="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
