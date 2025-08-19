@@ -16,24 +16,14 @@ export default function Home() {
     const sellValue = sell * qty;
     const turnover = buyValue + sellValue;
 
-    // Brokerage (0.03% or Rs 20/order whichever is lower)
     const brokerageBuy = Math.min(20, 0.0003 * buyValue);
     const brokerageSell = Math.min(20, 0.0003 * sellValue);
     const brokerage = brokerageBuy + brokerageSell;
 
-    // STT (0.025% on sell value for intraday)
     const stt = 0.00025 * sellValue;
-
-    // Exchange charges (0.00345% on turnover)
     const exch = 0.0000345 * turnover;
-
-    // SEBI charges (0.0001% on turnover)
     const sebi = 0.000001 * turnover;
-
-    // Stamp duty (0.003% on buy value)
     const stamp = 0.00003 * buyValue;
-
-    // GST (18% on brokerage + exchange charges)
     const gst = 0.18 * (brokerage + exch);
 
     return {
@@ -55,29 +45,18 @@ export default function Home() {
     const sellValue = sell * qty;
     const turnover = buyValue + sellValue;
 
-    // Brokerage (0.50% or Rs 20/order whichever is lower)
     const brokerageBuy = Math.min(20, 0.005 * buyValue);
     const brokerageSell = Math.min(20, 0.005 * sellValue);
     const brokerage = brokerageBuy + brokerageSell;
 
-    // STT (0.1% on both buy and sell value for delivery)
     const sttBuy = 0.001 * buyValue;
     const sttSell = 0.001 * sellValue;
     const stt = sttBuy + sttSell;
 
-    // Exchange charges (0.00345% on turnover)
     const exch = 0.0000345 * turnover;
-
-    // SEBI charges (0.0001% on turnover)
     const sebi = 0.000001 * turnover;
-
-    // Stamp duty (0.015% on buy value for delivery)
     const stamp = 0.00015 * buyValue;
-
-    // GST (18% on brokerage + exchange charges)
     const gst = 0.18 * (brokerage + exch);
-
-    // DP charges (for delivery trades, usually Rs 15.93 per scrip sold)
     const dpCharges = sellValue > 0 ? 15.93 : 0;
 
     return {
@@ -119,7 +98,6 @@ export default function Home() {
       tradingType
     });
 
-    // Gross & Net profit
     const grossProfit = (sell - buy) * qty;
     const netProfit = grossProfit - breakdown.totalCharges;
 
@@ -160,26 +138,30 @@ export default function Home() {
     );
   };
 
-  // Calculate total buy and sell prices
   const buyTotal = (parseFloat(buyPrice) * parseInt(quantity) || 0).toFixed(2);
   const sellTotal = (parseFloat(sellPrice) * parseInt(quantity) || 0).toFixed(2);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
             <span className="text-3xl">📈</span>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">P&L Calculator</h1>
-          <p className="text-slate-300">Calculate your trading profits and losses</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Intraday P&L Calculator</h1>
+          <p className="text-slate-300">Calculate your trading profits and losses for intraday and delivery trades with detailed charge breakdowns.</p>
         </div>
 
-        {/* Main Card */}
+        <div className="text-white mb-8 text-sm max-w-md mx-auto">
+          <h2 className="text-lg font-semibold">Why Use Our Intraday P&L Calculator?</h2>
+          <p>
+            Our <strong>intraday P&L calculator</strong> helps traders compute profits and losses for intraday and delivery trades. Enter your buy price, sell price, and quantity to get a detailed breakdown of charges, including brokerage, STT, exchange charges, SEBI fees, stamp duty, and GST. Whether you're a beginner or an experienced trader, our tool provides accurate calculations to optimize your trading decisions.
+          </p>
+        </div>
+
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/20">
           <div className="space-y-6">
-            {/* Trading Type Toggle */}
+            <h2 className="text-xl font-semibold text-white">Select Intraday or Delivery Trading</h2>
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-semibold text-white">
                 <span className="text-lg">🎯</span>
@@ -209,12 +191,15 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Buy Price Section */}
-            <div className="space-y-2">
+            <h2 className="text-xl font-semibold text-white">Enter Trade Details</h2>
+            <div className="space-y-2 relative group">
               <label className="flex items-center gap-2 text-sm font-semibold text-white">
                 <span className="text-lg">💰</span>
                 Buy Price
               </label>
+              <div className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 z-10">
+                Enter the price at which you bought the stock (per share).
+              </div>
               <input
                 type="number"
                 step="0.01"
@@ -232,12 +217,14 @@ export default function Home() {
               )}
             </div>
 
-            {/* Sell Price Section */}
-            <div className="space-y-2">
+            <div className="space-y-2 relative group">
               <label className="flex items-center gap-2 text-sm font-semibold text-white">
                 <span className="text-lg">💰</span>
                 Sell Price
               </label>
+              <div className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 z-10">
+                Enter the price at which you sold the stock (per share).
+              </div>
               <input
                 type="number"
                 step="0.01"
@@ -255,12 +242,14 @@ export default function Home() {
               )}
             </div>
 
-            {/* Quantity Section */}
-            <div className="space-y-2">
+            <div className="space-y-2 relative group">
               <label className="flex items-center gap-2 text-sm font-semibold text-white">
                 <span className="text-lg">🔢</span>
                 Quantity
               </label>
+              <div className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 z-10">
+                Enter the number of shares bought or sold.
+              </div>
               <input
                 type="number"
                 placeholder="0"
@@ -272,7 +261,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Trading Type Info */}
             <div className={`p-3 rounded-lg border ${
               tradingType === 'intraday' 
                 ? 'bg-blue-500/10 border-blue-400/30' 
@@ -291,7 +279,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Calculate Button */}
             <button
               onClick={calculate}
               className={`w-full bg-gradient-to-r ${
@@ -304,7 +291,6 @@ export default function Home() {
               Calculate {tradingType === 'intraday' ? 'Intraday' : 'Delivery'} P&L
             </button>
 
-            {/* Results Section */}
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 min-h-[120px] flex items-center justify-center">
               {result ? (
                 <div className="w-full text-white">
@@ -320,173 +306,195 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-6">
-          <p className="text-xs text-slate-400">
-            {tradingType === 'intraday' 
-              ? 'Intraday: Brokerage, STT, exchange charges, SEBI charges, stamp duty & GST'
-              : 'Delivery: Brokerage, STT, exchange charges, SEBI charges, stamp duty, GST & DP charges'
-            }
-          </p>
-        </div>
-      </div>
-
-      {/* Charges Breakdown Modal */}
-      {showBreakdown && chargesBreakdown && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                <span>📊</span>
-                {chargesBreakdown.tradingType === 'intraday' ? 'Intraday' : 'Delivery'} Charges Breakdown
-              </h3>
-              <button
-                onClick={() => setShowBreakdown(false)}
-                className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
-              >
-                <span className="text-gray-600">✕</span>
-              </button>
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mt-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Frequently Asked Questions</h2>
+          <div className="space-y-4 text-white">
+            <div>
+              <h3 className="text-sm font-medium">What is an intraday P&L calculator?</h3>
+              <p className="text-xs text-slate-300">
+                An intraday P&L calculator computes your profits and losses for intraday trades, factoring in charges like brokerage, STT, and GST.
+              </p>
             </div>
-            
-            <div className="space-y-4">
-              {/* Transaction Summary */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <span>📋</span>
-                  Transaction Summary
-                </h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Buy Value:</span>
-                    <span className="font-medium">₹{chargesBreakdown.buyValue.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Sell Value:</span>
-                    <span className="font-medium">₹{chargesBreakdown.sellValue.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between border-t pt-2">
-                    <span className="text-gray-600">Total Turnover:</span>
-                    <span className="font-medium">₹{chargesBreakdown.turnover.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Charges Breakdown */}
-              <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-                <h4 className="font-semibold text-red-700 mb-3 flex items-center gap-2">
-                  <span>💸</span>
-                  Deduction Details
-                </h4>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-gray-700 font-medium">Brokerage</div>
-                      <div className="text-xs text-gray-500">
-                        {chargesBreakdown.tradingType === 'intraday' 
-                          ? '0.03% or ₹20/order (whichever is lower)'
-                          : '0.50% or ₹20/order (whichever is lower)'
-                        }
-                      </div>
-                    </div>
-                    <span className="font-medium text-red-600">₹{chargesBreakdown.brokerage.toFixed(2)}</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-gray-700 font-medium">STT</div>
-                      <div className="text-xs text-gray-500">
-                        {chargesBreakdown.tradingType === 'intraday' 
-                          ? '0.025% on sell value'
-                          : '0.1% on both buy & sell value'
-                        }
-                      </div>
-                    </div>
-                    <span className="font-medium text-red-600">₹{chargesBreakdown.stt.toFixed(2)}</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-gray-700 font-medium">Exchange Charges</div>
-                      <div className="text-xs text-gray-500">0.00345% on turnover</div>
-                    </div>
-                    <span className="font-medium text-red-600">₹{chargesBreakdown.exchange.toFixed(2)}</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-gray-700 font-medium">SEBI Charges</div>
-                      <div className="text-xs text-gray-500">0.0001% on turnover</div>
-                    </div>
-                    <span className="font-medium text-red-600">₹{chargesBreakdown.sebi.toFixed(2)}</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-gray-700 font-medium">Stamp Duty</div>
-                      <div className="text-xs text-gray-500">
-                        {chargesBreakdown.tradingType === 'intraday' 
-                          ? '0.003% on buy value'
-                          : '0.015% on buy value'
-                        }
-                      </div>
-                    </div>
-                    <span className="font-medium text-red-600">₹{chargesBreakdown.stamp.toFixed(2)}</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-gray-700 font-medium">GST</div>
-                      <div className="text-xs text-gray-500">18% on brokerage + exchange charges</div>
-                    </div>
-                    <span className="font-medium text-red-600">₹{chargesBreakdown.gst.toFixed(2)}</span>
-                  </div>
-
-                  {/* DP Charges (only for delivery) */}
-                  {chargesBreakdown.tradingType === 'delivery' && (
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="text-gray-700 font-medium">DP Charges</div>
-                        <div className="text-xs text-gray-500">₹15.93 per scrip sold</div>
-                      </div>
-                      <span className="font-medium text-red-600">₹{chargesBreakdown.dpCharges.toFixed(2)}</span>
-                    </div>
-                  )}
-                  
-                  <div className="border-t pt-2 flex justify-between items-center">
-                    <div className="text-gray-700 font-semibold">Total Charges</div>
-                    <span className="font-bold text-red-600 text-lg">
-                      ₹{chargesBreakdown.totalCharges.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Trading Type Comparison */}
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h4 className="font-semibold text-blue-700 mb-3 flex items-center gap-2">
-                  <span>📚</span>
-                  Trading Type Info
-                </h4>
-                <div className="text-xs text-gray-600 space-y-2">
-                  <div>
-                    <span className="font-medium text-blue-600">Intraday:</span> Buy & sell on same day. Lower charges, positions auto-squared off by 3:20 PM.
-                  </div>
-                  <div>
-                    <span className="font-medium text-purple-600">Delivery (CNC):</span> Hold stocks for days/years. Higher charges but shares credited to demat account.
-                  </div>
-                </div>
-              </div>
+            <div>
+              <h3 className="text-sm font-medium">How are charges calculated?</h3>
+              <p className="text-xs text-slate-300">
+                Charges include brokerage (0.03% for intraday, 0.50% for delivery), STT, exchange charges, SEBI fees, stamp duty, and GST.
+              </p>
             </div>
-
-            <button
-              onClick={() => setShowBreakdown(false)}
-              className="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg font-medium transition-colors"
-            >
-              Close
-            </button>
+            <div>
+              <h3 className="text-sm font-medium">What’s the difference between intraday and delivery trading?</h3>
+              <p className="text-xs text-slate-300">
+                Intraday trading involves buying and selling stocks within the same day with lower charges. Delivery trading involves holding stocks for days or years, with higher charges and shares credited to your demat account.
+              </p>
+            </div>
           </div>
         </div>
-      )}
+
+        <div className="text-center mt-6">
+          <p className="text-sm text-white">
+            Found our <strong>intraday P&L calculator</strong> useful?{" "}
+            <button
+              onClick={() => navigator.clipboard.writeText("https://intraday-pl-calculator.com")}
+              className="text-blue-400 hover:underline"
+            >
+              Copy Link
+            </button>{" "}
+            or bookmark for quick access!
+          </p>
+        </div>
+
+        {showBreakdown && chargesBreakdown && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                  <span>📊</span>
+                  {chargesBreakdown.tradingType === 'intraday' ? 'Intraday' : 'Delivery'} Charges Breakdown
+                </h3>
+                <button
+                  onClick={() => setShowBreakdown(false)}
+                  className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+                >
+                  <span className="text-gray-600">✕</span>
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="ishable bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                    <span>📋</span>
+                    Transaction Summary
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Buy Value:</span>
+                      <span className="font-medium">₹{chargesBreakdown.buyValue.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Sell Value:</span>
+                      <span className="font-medium">₹{chargesBreakdown.sellValue.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between border-t pt-2">
+                      <span className="text-gray-600">Total Turnover:</span>
+                      <span className="font-medium">₹{chargesBreakdown.turnover.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                  <h4 className="font-semibold text-red-700 mb-3 flex items-center gap-2">
+                    <span>💸</span>
+                    Deduction Details
+                  </h4>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-gray-700 font-medium">Brokerage</div>
+                        <div className="text-xs text-gray-500">
+                          {chargesBreakdown.tradingType === 'intraday' 
+                            ? '0.03% or ₹20/order (whichever is lower)'
+                            : '0.50% or ₹20/order (whichever is lower)'
+                          }
+                        </div>
+                      </div>
+                      <span className="font-medium text-red-600">₹{chargesBreakdown.brokerage.toFixed(2)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-gray-700 font-medium">STT</div>
+                        <div className="text-xs text-gray-500">
+                          {chargesBreakdown.tradingType === 'intraday' 
+                            ? '0.025% on sell value'
+                            : '0.1% on both buy & sell value'
+                          }
+                        </div>
+                      </div>
+                      <span className="font-medium text-red-600">₹{chargesBreakdown.stt.toFixed(2)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-gray-700 font-medium">Exchange Charges</div>
+                        <div className="text-xs text-gray-500">0.00345% on turnover</div>
+                      </div>
+                      <span className="font-medium text-red-600">₹{chargesBreakdown.exchange.toFixed(2)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-gray-700 font-medium">SEBI Charges</div>
+                        <div className="text-xs text-gray-500">0.0001% on turnover</div>
+                      </div>
+                      <span className="font-medium text-red-600">₹{chargesBreakdown.sebi.toFixed(2)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-gray-700 font-medium">Stamp Duty</div>
+                        <div className="text-xs text-gray-500">
+                          {chargesBreakdown.tradingType === 'intraday' 
+                            ? '0.003% on buy value'
+                            : '0.015% on buy value'
+                          }
+                        </div>
+                      </div>
+                      <span className="font-medium text-red-600">₹{chargesBreakdown.stamp.toFixed(2)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-gray-700 font-medium">GST</div>
+                        <div className="text-xs text-gray-500">18% on brokerage + exchange charges</div>
+                      </div>
+                      <span className="font-medium text-red-600">₹{chargesBreakdown.gst.toFixed(2)}</span>
+                    </div>
+
+                    {chargesBreakdown.tradingType === 'delivery' && (
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <div className="text-gray-700 font-medium">DP Charges</div>
+                          <div className="text-xs text-gray-500">₹15.93 per scrip sold</div>
+                        </div>
+                        <span className="font-medium text-red-600">₹{chargesBreakdown.dpCharges.toFixed(2)}</span>
+                      </div>
+                    )}
+                    
+                    <div className="border-t pt-2 flex justify-between items-center">
+                      <div className="text-gray-700 font-semibold">Total Charges</div>
+                      <span className="font-bold text-red-600 text-lg">
+                        ₹{chargesBreakdown.totalCharges.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-blue-700 mb-3 flex items-center gap-2">
+                    <span>📚</span>
+                    Trading Type Info
+                  </h4>
+                  <div className="text-xs text-gray-600 space-y-2">
+                    <div>
+                      <span className="font-medium text-blue-600">Intraday:</span> Buy & sell on same day. Lower charges, positions auto-squared off by 3:20 PM.
+                    </div>
+                    <div>
+                      <span className="font-medium text-purple-600">Delivery (CNC):</span> Hold stocks for days/years. Higher charges but shares credited to demat account.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowBreakdown(false)}
+                className="w-full mt-6 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
