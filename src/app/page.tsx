@@ -1,103 +1,214 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState } from 'react';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [buyPrice, setBuyPrice] = useState<string>('');
+  const [sellPrice, setSellPrice] = useState<string>('');
+  const [quantity, setQuantity] = useState<string>('');
+  const [result, setResult] = useState<React.ReactNode>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const calculate = () => {
+    const buy = parseFloat(buyPrice);
+    const sell = parseFloat(sellPrice);
+    const qty = parseInt(quantity);
+
+    if (isNaN(buy) || isNaN(sell) || isNaN(qty)) {
+      setResult('⚠️ Please enter valid numbers.');
+      return;
+    }
+
+    const buyValue = buy * qty;
+    const sellValue = sell * qty;
+    const turnover = buyValue + sellValue;
+
+    // Brokerage (0.03% or Rs 20/order)
+    const brokerageBuy = Math.min(20, 0.0003 * buyValue);
+    const brokerageSell = Math.min(20, 0.0003 * sellValue);
+    const brokerage = brokerageBuy + brokerageSell;
+
+    // STT
+    const stt = 0.00025 * sellValue;
+
+    // Exchange charges
+    const exch = 0.0000345 * turnover;
+
+    // SEBI charges
+    const sebi = 0.000001 * turnover;
+
+    // Stamp duty
+    const stamp = 0.00003 * buyValue;
+
+    // GST
+    const gst = 0.18 * (brokerage + exch);
+
+    // Total charges
+    const totalCharges = brokerage + stt + exch + sebi + stamp + gst;
+
+    // Gross & Net profit
+    const grossProfit = (sell - buy) * qty;
+    const netProfit = grossProfit - totalCharges;
+
+    setResult(
+      <>
+        <b style={{ color: '#000' }}>Gross Profit:</b> ₹{grossProfit.toFixed(2)} <br />
+        <b style={{ color: '#000' }}>Total Charges:</b> ₹{totalCharges.toFixed(2)} <br />
+        <b style={{ color: netProfit >= 0 ? 'green' : 'red' }}>
+          Net Profit:
+        </b>{' '}
+        ₹{netProfit.toFixed(2)}
+      </>
+    );
+  };
+
+  return (
+    <div
+      style={{
+        fontFamily: 'Arial, sans-serif',
+        margin: '40px',
+        background: '#f5f7fa',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: '#000', // Ensure default text color
+        boxSizing: 'border-box',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '500px',
+          margin: 'auto',
+          background: 'white',
+          padding: '20px',
+          borderRadius: '12px',
+          boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+          color: '#000', // Ensure container text color
+        }}
+      >
+        <h2
+          style={{
+            textAlign: 'center',
+            marginBottom: '20px',
+            color: '#000', // Explicit text color
+          }}
+        >
+          Intraday P&L Calculator
+        </h2>
+
+        <label
+          style={{
+            fontWeight: 'bold',
+            color: '#000', // Explicit text color
+          }}
+        >
+          Buy Price
+        </label>
+        <input
+          type="number"
+          step="0.01"
+          placeholder="Enter Buy Price"
+          value={buyPrice}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setBuyPrice(e.target.value)
+          }
+          style={{
+            width: '100%',
+            padding: '8px',
+            margin: '8px 0 16px',
+            border: '1px solid #ccc',
+            borderRadius: '6px',
+            boxSizing: 'border-box',
+            color: '#000', // Input text color
+          }}
+        />
+
+        <label
+          style={{
+            fontWeight: 'bold',
+            color: '#000', // Explicit text color
+          }}
+        >
+          Sell Price
+        </label>
+        <input
+          type="number"
+          step="0.01"
+          placeholder="Enter Sell Price"
+          value={sellPrice}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSellPrice(e.target.value)
+          }
+          style={{
+            width: '100%',
+            padding: '8px',
+            margin: '8px 0 16px',
+            border: '1px solid #ccc',
+            borderRadius: '6px',
+            boxSizing: 'border-box',
+            color: '#000', // Input text color
+          }}
+        />
+
+        <label
+          style={{
+            fontWeight: 'bold',
+            color: '#000', // Explicit text color
+          }}
+        >
+          Quantity
+        </label>
+        <input
+          type="number"
+          placeholder="Enter Quantity"
+          value={quantity}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setQuantity(e.target.value)
+          }
+          style={{
+            width: '100%',
+            padding: '8px',
+            margin: '8px 0 16px',
+            border: '1px solid #ccc',
+            borderRadius: '6px',
+            boxSizing: 'border-box',
+            color: '#000', // Input text color
+          }}
+        />
+
+        <button
+          onClick={calculate}
+          style={{
+            width: '100%',
+            padding: '10px',
+            background: '#007bff',
+            color: 'white', // Explicit button text color
+            border: 'none',
+            borderRadius: '6px',
+            fontSize: '16px',
+            cursor: 'pointer',
+            boxSizing: 'border-box',
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.background = '#0056b3')}
+          onMouseOut={(e) => (e.currentTarget.style.background = '#007bff')}
+        >
+          Calculate
+        </button>
+
+        <div
+          style={{
+            marginTop: '20px',
+            padding: '15px',
+            background: '#f1f1f1',
+            borderRadius: '8px',
+            minHeight: '60px', // Ensure div is visible
+            color: '#000', // Explicit text color
+            boxSizing: 'border-box',
+          }}
+        >
+          {result || 'Enter values and click Calculate to see results.'}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
 }
